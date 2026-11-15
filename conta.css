@@ -73,3 +73,11 @@ ol li{margin-bottom:9px}ol b{color:var(--ink)}
 .sairlink{background:none;border:0;color:var(--muted);font:inherit;font-size:13.5px;
   cursor:pointer;padding:8px;width:auto;margin:0}
 .sairlink:hover{color:var(--bad);background:none}
+
+/* aviso verde de "deu certo" — usado em esqueci.html e redefinir.html */
+.feito{
+  display:none; background:#e6fbef; border:1px solid #9fe3bf; color:#0b5c36;
+  border-radius:10px; padding:14px 16px; margin:0 0 16px; font-size:14.5px; line-height:1.55;
+}
+.feito.on{ display:block }
+.feito b{ color:#07401f }

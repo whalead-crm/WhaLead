@@ -16,6 +16,12 @@ window.WHALEAD_CONFIG = {
   // enganosa. Em branco, o site fala apenas "em até 12x".
   precoParcela: '',
 
+  // true  = o COMPRADOR paga os juros do parcelamento -> "em até 12x com juros"
+  // false = texto neutro, "em até 12x no cartão"
+  // Tem que bater com o painel do Mercado Pago, em
+  // Seu negócio > Custos > parcelamento sem juros.
+  jurosDoCliente: true,
+
   /* ---- o que o cliente leva ------------------------------------------
      A licença vale 1 ano a contar do dia da compra, e não renova sozinha.
 
@@ -33,7 +39,7 @@ window.WHALEAD_CONFIG = {
 
      Se algum dia precisar desligar o login e mandar todo mundo direto
      para o checkout, basta deixar `api` em branco.                       */
-  api:          'https://whalead-licencas.whalead-crm.workers.dev',
+  api:          'https://api.whalead.com.br',
   checkoutUrl:  'https://mpago.li/2du2Do1',
 
   /* ---- contato --------------------------------------------------------

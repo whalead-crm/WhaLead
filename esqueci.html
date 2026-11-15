@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Esqueci minha senha — WhaLead</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="brand.png">
+<link rel="stylesheet" href="conta.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="index.html"><img src="logo-whalead.png" alt="WhaLead"></a>
+  <nav>Lembrou? <a href="entrar.html" style="color:#11b95d;font-weight:650">Entrar</a></nav>
+</header>
+
+<main><div class="caixa">
+  <h1>Esqueci minha senha</h1>
+  <p class="sub">Escreva o e-mail da sua conta. Mandamos um link para você
+    escolher uma senha nova.</p>
+
+  <div class="feito" id="feito"></div>
+
+  <form id="f" novalidate>
+    <div class="erro" id="erro"></div>
+    <div class="campo">
+      <label for="email">E-mail da conta</label>
+      <input id="email" type="email" autocomplete="email" placeholder="voce@email.com" required autofocus>
+    </div>
+    <button id="bt" type="submit">Mandar o link</button>
+  </form>
+
+  <p class="pe">Lembrou a senha? <a href="entrar.html">Entrar</a></p>
+</div></main>
+
+<footer>© <span data-t="ano">2026</span> WhaLead ·
+  <a href="privacidade.html">Privacidade</a> · <a href="termos.html">Termos</a>
+  <br><span style="font-size:12.5px;opacity:.75">Arthur Andrew · São Bernardo do Campo/SP · <a href="termos.html#identificacao">identificação completa do fornecedor</a></span></footer>
+
+<script src="config.js?v=10"></script>
+<script src="comum.js?v=10"></script>
+<script>
+(function () {
+  var C = window.WHALEAD_CONFIG || {};
+  var f = document.getElementById('f'), bt = document.getElementById('bt'),
+      cx = document.getElementById('erro'), fe = document.getElementById('feito');
+
+  var g = localStorage.getItem('wl_email');
+  if (g) document.getElementById('email').value = g;
+
+  /* Sem servidor de contas não há senha para recuperar. Mesma conduta do
+     entrar.html: avisar ANTES, em vez de deixar a pessoa preencher e
+     bater numa tarja vermelha. */
+  if (!C.api) {
+    var caixa = document.createElement('div');
+    caixa.className = 'cartao';
+    caixa.innerHTML =
+      '<p style="margin:0 0 6px;font-weight:700;color:#112b24;font-size:16px">' +
+      'A recuperação de senha ainda não está disponível</p>' +
+      '<p style="margin:0 0 18px">Escreva para o suporte dizendo o e-mail da ' +
+      'sua conta — nós devolvemos o acesso.</p>' +
+      '<a class="btn verde" data-suporte-botao style="display:flex;align-items:center;' +
+      'justify-content:center;text-decoration:none">Falar com o suporte</a>';
+    f.replaceWith(caixa);
+    return;
+  }
+
+  function erro(t) { cx.textContent = t; cx.className = 'erro on';
+    bt.disabled = false; bt.textContent = 'Mandar o link'; }
+
+  f.addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    cx.className = 'erro';
+    var email = document.getElementById('email').value.trim();
+    bt.disabled = true; bt.textContent = 'Mandando…';
+    try {
+      var r = await fetch(C.api + '/esqueci', {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      });
+      var j = await r.json();
+      if (!j.ok) return erro(j.erro || 'Não consegui agora. Tente de novo.');
+
+      if (j.aviso === 'sem_email') {
+        return erro('O envio de e-mail ainda não está ligado neste servidor. ' +
+          'Fale com o suporte: ' + (C.suporte || ''));
+      }
+
+      /* De propósito NÃO dizemos se o e-mail tem conta ou não: se
+         dissesse, qualquer um descobriria a lista de clientes
+         testando endereços. */
+      fe.innerHTML = '<b>Se existe uma conta com esse e-mail, o link já foi enviado.</b><br>' +
+        'Procure por uma mensagem do WhaLead em <b>' +
+        email.replace(/[&<>"]/g, '') + '</b>. ' +
+        'O link vale por 1 hora.<br><br>' +
+        'Não chegou em alguns minutos? Veja a caixa de <b>spam</b> ou ' +
+        '<b>promoções</b> — é onde esse tipo de mensagem costuma cair.';
+      fe.className = 'feito on';
+      f.style.display = 'none';
+    } catch (e) {
+      erro('Não consegui falar com o servidor. Confira sua internet e tente de novo.');
+    }
+  });
+})();
+</script>
+</body>
+</html>

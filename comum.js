@@ -3,9 +3,22 @@
    ============================================================ */
 (function () {
   var C = window.WHALEAD_CONFIG || {};
+  /* Como o parcelamento aparece na tela. Três casos, nesta ordem:
+
+     1. precoParcela preenchido -> "12x de R$ 24,99 sem juros"
+        Só vale se VOCÊ assume os juros no painel do Mercado Pago. Senão
+        é parcela anunciada diferente da cobrada, e isso é processo.
+     2. jurosDoCliente: true    -> "em até 12x com juros"
+        Quem paga os juros é o comprador. Não dá para cravar o valor da
+        parcela aqui: ele muda com a bandeira e com a taxa do dia, e só
+        o checkout sabe o número certo.
+     3. nenhum dos dois         -> "em até 12x no cartão" (neutro)        */
+  var nParc = C.parcelas || 12;
   var parcelado = C.precoParcela
     ? C.parcelas + 'x de ' + C.precoParcela + ' sem juros'
-    : 'em até ' + (C.parcelas || 12) + 'x no cartão';
+    : C.jurosDoCliente
+      ? 'em até ' + nParc + 'x com juros'
+      : 'em até ' + nParc + 'x no cartão';
 
   /* ---- preenche os textos que vêm da configuração ---- */
   var textos = {
