@@ -25,3 +25,6 @@ User-agent: AhrefsBot
 Disallow: /
 User-agent: MJ12bot
 Disallow: /
+
+# Mapa do site, para o Google achar tudo de uma vez.
+Sitemap: https://whalead.com.br/sitemap.xml
