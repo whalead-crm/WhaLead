@@ -72,7 +72,9 @@ ol li{margin-bottom:9px}ol b{color:var(--ink)}
 .oculto{display:none}
 .sairlink{background:none;border:0;color:var(--muted);font:inherit;font-size:13.5px;
   cursor:pointer;padding:8px;width:auto;margin:0}
-.sairlink:hover{color:var(--bad);background:none}
+/* Sair não é erro nem perigo: é uma saída comum. Vermelho aqui assustava
+   sem motivo e fugia da paleta verde do site. */
+.sairlink:hover{color:var(--bright);background:none}
 
 /* aviso verde de "deu certo" — usado em esqueci.html e redefinir.html */
 .feito{
