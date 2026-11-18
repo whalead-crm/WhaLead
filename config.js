@@ -36,6 +36,10 @@ window.WHALEAD_CONFIG = {
   vitalicio:    false,  // false = a licença vence
   validadeDias: 365,    // tem que bater com DIAS_ACESSO lá na Cloudflare
   garantiaDias: 7,      // direito de arrependimento (CDC, art. 49)
+  /* versão da extensão que está no ar. Aparece na faixa do topo e na
+     legenda das telas. Tem que bater com extensao-crm/manifest.json —
+     o teste t-versao-site.mjs compara os dois e falha se divergirem. */
+  versao: '4.64.0',
 
   /* ---- para onde vai o botão de comprar -------------------------------
      LIGADO em 12/11/2026. O servidor está no ar e testado: o cliente cria

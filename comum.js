@@ -8,12 +8,14 @@
      1. precoParcela + jurosDoCliente:false -> "12x de R$ 24,99 sem juros"
         Só vale se VOCÊ assume os juros no painel do Mercado Pago. Senão
         é parcela anunciada diferente da cobrada, e isso é processo.
-     2. precoParcela + jurosDoCliente:true  -> "12x de R$ 29,34 (total R$ 352,08)"
+     2. precoParcela + jurosDoCliente:true  -> "12x de R$ 30,52"
         O comprador paga os juros, e mesmo assim anunciamos a parcela.
-        Então a palavra "sem juros" NÃO pode aparecer, e o total tem que
-        vir junto: venda a prazo exige informar o montante final
-        (CDC art. 52, III). O total sai da conta parcela x nº de parcelas,
-        não de um campo solto — número solto desencontra do resto.
+        Então a palavra "sem juros" NÃO pode aparecer.
+        O montante total NÃO vai na vitrine (decisão do dono, nov/2026).
+        Quem concede o crédito aqui é o Mercado Pago, não o vendedor, e o
+        checkout do MP mostra juros, parcelas e total antes de confirmar —
+        é lá que o CDC art. 52 se cumpre. Se um dia o parcelamento passar
+        a ser financiado por você, o total tem que voltar para cá.
         Responsabilidade de quem preenche: esse valor muda com a bandeira
         e com a taxa do dia. Confira no checkout antes de publicar.
      3. jurosDoCliente: true, sem valor     -> "em até 12x com juros"
@@ -32,9 +34,8 @@
   }
   var parcelado;
   if (C.precoParcela && C.jurosDoCliente) {
-    var total = emNumero(C.precoParcela) * nParc;
-    parcelado = nParc + 'x de ' + C.precoParcela +
-      (isFinite(total) ? ' (total ' + emReais(total) + ')' : ' com juros');
+    // sem "sem juros" e sem total: só a parcela. O resto é no checkout.
+    parcelado = nParc + 'x de ' + C.precoParcela;
   } else if (C.precoParcela) {
     parcelado = nParc + 'x de ' + C.precoParcela + ' sem juros';
   } else if (C.jurosDoCliente) {
@@ -43,13 +44,31 @@
     parcelado = 'em até ' + nParc + 'x no cartão';
   }
 
+  /* "menos de R$ 1 por dia" é argumento de venda, e argumento de venda
+     que deixa de ser verdade vira processo. Então a frase se calcula a
+     partir do preço e do prazo da licença, e se corrige sozinha: passou
+     de R$ 1, ela para de dizer "menos de R$ 1" e escreve o valor real.
+
+     Ancorado no preço À VISTA de propósito. Em 12x o cliente paga
+     R$ 366,24, que dá R$ 1,00 por dia — aí a frase não valeria. Quem
+     mexer aqui, confira os dois. */
+  var porDia = (function () {
+    var d = Number(C.validadeDias || 365);
+    var p = emNumero(C.preco);
+    if (!isFinite(p) || !(d > 0)) return '';
+    var v = p / d;
+    return v < 1 ? 'menos de R$ 1 por dia' : emReais(v) + ' por dia';
+  })();
+
   /* ---- preenche os textos que vêm da configuração ---- */
   var textos = {
     preco: C.preco,
+    porDia: porDia,
     parcelas: String(C.parcelas || 12),
     parcelado: parcelado,
     precoCompleto: C.preco + ' à vista, ou ' + parcelado,
     garantia: String(C.garantiaDias || 7),
+    versao:   String(C.versao || ''),
     /* O prazo da licença escrito por extenso, para os termos. Sai daqui e
        não da mão de ninguém: mudou validadeDias no config, muda no texto.
        Lembre que DIAS_ACESSO, na Cloudflare, tem que contar o mesmo. */
