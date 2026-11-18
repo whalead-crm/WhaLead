@@ -69,6 +69,7 @@
     precoCompleto: C.preco + ' à vista, ou ' + parcelado,
     garantia: String(C.garantiaDias || 7),
     versao:   String(C.versao || ''),
+    lojaUrl:  String(C.lojaUrl || ''),
     /* O prazo da licença escrito por extenso, para os termos. Sai daqui e
        não da mão de ninguém: mudou validadeDias no config, muda no texto.
        Lembre que DIAS_ACESSO, na Cloudflare, tem que contar o mesmo. */
@@ -99,6 +100,25 @@
     '&body=' + encodeURIComponent(recadoSuporte);
 
   /* todo link de e-mail do site, em qualquer página, vai para o mesmo lugar */
+/* Passo 3 do tutorial: enquanto a extensão não estiver na Chrome Web
+     Store, o texto diz a verdade (o link chega por e-mail). Preenchendo
+     lojaUrl no config, o mesmo passo vira um botão que leva à loja.
+     Nenhum dos dois textos fica cravado no HTML. */
+  (function () {
+    var alvo = document.querySelector('[data-passo-instalar]');
+    if (!alvo) return;
+    if (textos.lojaUrl) {
+      alvo.textContent = 'Um clique e o ícone do WhaLead aparece na barra do navegador.';
+      var a = document.createElement('a');
+      a.className = 'lojabtn';
+      a.href = textos.lojaUrl;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.textContent = 'Instalar no Chrome';
+      alvo.parentNode.appendChild(a);
+    }
+  })();
+
   document.querySelectorAll('[data-suporte]').forEach(function (e) {
     e.setAttribute('href', LINK_EMAIL);
     e.setAttribute('target', '_blank');

@@ -39,7 +39,12 @@ window.WHALEAD_CONFIG = {
   /* versão da extensão que está no ar. Aparece na faixa do topo e na
      legenda das telas. Tem que bater com extensao-crm/manifest.json —
      o teste t-versao-site.mjs compara os dois e falha se divergirem. */
-  versao: '4.64.0',
+  versao: '4.65.0',
+  /* Link da extensão na Chrome Web Store. Enquanto estiver vazio, o
+     passo 3 do tutorial diz que o link chega por e-mail — que é o que
+     acontece hoje. Assim que a loja aprovar, cole a URL aqui e o passo
+     vira um botão "Instalar no Chrome" sozinho. */
+  lojaUrl: '',
 
   /* ---- para onde vai o botão de comprar -------------------------------
      LIGADO em 12/11/2026. O servidor está no ar e testado: o cliente cria
