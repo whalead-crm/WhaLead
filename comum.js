@@ -3,22 +3,45 @@
    ============================================================ */
 (function () {
   var C = window.WHALEAD_CONFIG || {};
-  /* Como o parcelamento aparece na tela. Três casos, nesta ordem:
+  /* Como o parcelamento aparece na tela. Quatro casos, nesta ordem:
 
-     1. precoParcela preenchido -> "12x de R$ 24,99 sem juros"
+     1. precoParcela + jurosDoCliente:false -> "12x de R$ 24,99 sem juros"
         Só vale se VOCÊ assume os juros no painel do Mercado Pago. Senão
         é parcela anunciada diferente da cobrada, e isso é processo.
-     2. jurosDoCliente: true    -> "em até 12x com juros"
-        Quem paga os juros é o comprador. Não dá para cravar o valor da
-        parcela aqui: ele muda com a bandeira e com a taxa do dia, e só
-        o checkout sabe o número certo.
-     3. nenhum dos dois         -> "em até 12x no cartão" (neutro)        */
+     2. precoParcela + jurosDoCliente:true  -> "12x de R$ 29,34 (total R$ 352,08)"
+        O comprador paga os juros, e mesmo assim anunciamos a parcela.
+        Então a palavra "sem juros" NÃO pode aparecer, e o total tem que
+        vir junto: venda a prazo exige informar o montante final
+        (CDC art. 52, III). O total sai da conta parcela x nº de parcelas,
+        não de um campo solto — número solto desencontra do resto.
+        Responsabilidade de quem preenche: esse valor muda com a bandeira
+        e com a taxa do dia. Confira no checkout antes de publicar.
+     3. jurosDoCliente: true, sem valor     -> "em até 12x com juros"
+     4. nenhum dos dois                     -> "em até 12x no cartão"     */
   var nParc = C.parcelas || 12;
-  var parcelado = C.precoParcela
-    ? C.parcelas + 'x de ' + C.precoParcela + ' sem juros'
-    : C.jurosDoCliente
-      ? 'em até ' + nParc + 'x com juros'
-      : 'em até ' + nParc + 'x no cartão';
+  /* "R$ 29,34" -> 29.34. Devolve NaN se vier escrito de um jeito que não
+     dá para somar, e também se vier zero ou negativo: "12x de R$ 0,00
+     (total R$ 0,00)" é pior do que não dizer nada. Nesses casos o total
+     some do texto em vez de sair errado. */
+  function emNumero(txt) {
+    var n = parseFloat(String(txt).replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.'));
+    return isFinite(n) && n > 0 ? n : NaN;
+  }
+  function emReais(n) {
+    return 'R$ ' + n.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+  var parcelado;
+  if (C.precoParcela && C.jurosDoCliente) {
+    var total = emNumero(C.precoParcela) * nParc;
+    parcelado = nParc + 'x de ' + C.precoParcela +
+      (isFinite(total) ? ' (total ' + emReais(total) + ')' : ' com juros');
+  } else if (C.precoParcela) {
+    parcelado = nParc + 'x de ' + C.precoParcela + ' sem juros';
+  } else if (C.jurosDoCliente) {
+    parcelado = 'em até ' + nParc + 'x com juros';
+  } else {
+    parcelado = 'em até ' + nParc + 'x no cartão';
+  }
 
   /* ---- preenche os textos que vêm da configuração ---- */
   var textos = {

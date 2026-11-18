@@ -11,10 +11,14 @@ window.WHALEAD_CONFIG = {
      reclamação na certa (e no Procon).                                  */
   preco:        'R$ 299,90',
   parcelas:     12,
-  // Só preencha se o seu checkout realmente oferecer SEM JUROS.
+  // O valor da MAIOR parcela (a de 12x), do jeito que o checkout mostra.
   // Prometer parcela fixa que o cliente não vê no checkout é propaganda
   // enganosa. Em branco, o site fala apenas "em até 12x".
-  precoParcela: '',
+  // Com jurosDoCliente:true, o site escreve a parcela E o total, porque
+  // venda a prazo exige informar o montante final.
+  // CONFIRA NO CHECKOUT sempre que mexer no preço: a parcela muda com a
+  // bandeira e com a taxa do dia.
+  precoParcela: 'R$ 30,52',
 
   // true  = o COMPRADOR paga os juros do parcelamento -> "em até 12x com juros"
   // false = texto neutro, "em até 12x no cartão"

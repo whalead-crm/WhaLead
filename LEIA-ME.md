@@ -68,7 +68,7 @@ Abra `config.js` no Bloco de Notas. Mudou ali, mudou nas 7 páginas:
 ```js
 preco:        'R$ 299,90',   // escreva como deve aparecer na tela
 parcelas:     12,
-precoParcela: '',            // só preencha se o checkout tiver MESMO 12x sem juros
+precoParcela: 'R$ 29,34',    // o valor da parcela de 12x, igual ao checkout
 vitalicio:    true,
 garantiaDias: 7,
 api:          '',            // vazio = botão vai direto ao Mercado Pago
@@ -76,11 +76,28 @@ checkoutUrl:  'https://mpago.li/2du2Do1',
 suporte:      'whalead.crm@gmail.com'
 ```
 
-**`precoParcela` em branco é de propósito.** Prometer "12x de R$ 24,99 sem juros"
-numa página e o cliente ver outro valor no Mercado Pago é propaganda enganosa.
-Em branco, o site diz apenas "em até 12x no cartão" e o checkout mostra o valor real.
-Se você confirmar no Mercado Pago que o parcelamento sai sem juros por sua conta,
-preencha e a página passa a mostrar a parcela.
+**`precoParcela` é o valor da parcela de 12x, copiado do checkout.** O site
+escreve a parcela E o total, porque venda a prazo exige informar o montante
+final (CDC art. 52, III). Com `jurosDoCliente: true`, sai assim:
+
+> R$ 299,90 à vista, ou **12x de R$ 29,34 (total R$ 352,08)**
+
+O que a página escreve depende de dois campos:
+
+| `precoParcela` | `jurosDoCliente` | O site diz |
+|---|---|---|
+| `'R$ 29,34'` | `true` | 12x de R$ 29,34 (total R$ 352,08) |
+| `'R$ 25,00'` | `false` | 12x de R$ 25,00 sem juros |
+| `''` | `true` | em até 12x com juros |
+| `''` | `false` | em até 12x no cartão |
+
+**Sempre que mexer no preço, confira a parcela no checkout e atualize aqui.**
+Parcela anunciada diferente da cobrada é propaganda enganosa. Em dúvida,
+deixe `precoParcela: ''` — o texto fica genérico e o checkout mostra o valor
+real. A suíte `t-parcelas.mjs` recusa as combinações perigosas (por exemplo,
+"sem juros" com `jurosDoCliente: true`, ou parcela sem total).
+
+Para refazer as contas com outro preço: `node parcelas.mjs 299.90`
 
 ---
 
