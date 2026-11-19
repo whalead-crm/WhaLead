@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Minha conta — WhaLead</title>
 <meta name="robots" content="noindex">
 <meta name="google" content="notranslate">
@@ -10,12 +10,12 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icone-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icone-512.png">
 <link rel="apple-touch-icon" href="icone-192-claro.png">
-<link rel="stylesheet" href="conta.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;750;800&display=swap"><link rel="stylesheet" href="conta.css">
 <style>main{place-items:start center}.caixa{max-width:700px}</style>
 </head>
 <body>
 <header>
-  <a class="brand" href="index.html"><img src="logo-whalead.png" alt="WhaLead"></a>
+  <a class="brand" href="index.html"><img src="logo-whalead.png" alt="WhaLead" width="1991" height="659" decoding="async"></a>
   <nav><button class="sairlink" id="sair">Sair</button></nav>
 </header>
 
@@ -123,7 +123,7 @@
     ac.innerHTML = '';
 
     if (d.plano === 'ativo' || d.plano === 'teste') {
-      pino.className = 'pino p-ativo'; pino.textContent = '● Acesso liberado';
+      pino.className = 'pino p-ativo'; pino.textContent = 'Acesso liberado';
       tit.textContent = 'Tudo certo. Seu acesso está liberado.';
       /* o servidor sempre manda uma data; o segundo texto é só rede de
          segurança para um comprovante antigo guardado no navegador.    */
@@ -132,7 +132,7 @@
         : 'Licença ativa. Recarregue a página para ver a data de validade.';
       el('comoUsar').classList.remove('oculto');
     } else {
-      pino.className = 'pino p-sem'; pino.textContent = '● Falta liberar';
+      pino.className = 'pino p-sem'; pino.textContent = 'Falta liberar';
       tit.textContent = 'Seu acesso ainda não foi liberado';
       det.textContent = d.motivo || ((C.preco || '') +
         ' pela licença de 1 ano, com ' + (C.garantiaDias || 7) + ' dias de garantia.');

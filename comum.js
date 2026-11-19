@@ -49,23 +49,76 @@
      partir do preço e do prazo da licença, e se corrige sozinha: passou
      de R$ 1, ela para de dizer "menos de R$ 1" e escreve o valor real.
 
-     Ancorado no preço À VISTA de propósito. Em 12x o cliente paga
-     R$ 366,24, que dá R$ 1,00 por dia — aí a frase não valeria. Quem
-     mexer aqui, confira os dois. */
-  var porDia = (function () {
-    var d = Number(C.validadeDias || 365);
-    var p = emNumero(C.preco);
-    if (!isFinite(p) || !(d > 0)) return '';
-    var v = p / d;
-    return v < 1 ? 'menos de R$ 1 por dia' : emReais(v) + ' por dia';
-  })();
+     Ancorado no preço À VISTA de propósito. Pela soma das 12 parcelas
+     a conta diária bate exatamente R$ 1,00 — e aí "menos de R$ 1" não
+     valeria mais. Quem mexer no preço ou no prazo, confira os dois. */
+    var porDia = (function () {
+      var d = Number(C.validadeDias || 365);
+      var p = emNumero(C.preco);
+      if (!isFinite(p) || !(d > 0)) return '';
+      var v = p / d;
+      return v < 1 ? 'menos de R$ 1 por dia' : emReais(v) + ' por dia';
+    })();
+
+    /* O centavo exato do dia, para a letra miúda. "Menos de R$ 1" é o
+       gancho; este é o número que sustenta o gancho se alguém conferir. */
+    var porDiaExato = (function () {
+      var d = Number(C.validadeDias || 365);
+      var p = emNumero(C.preco);
+      if (!isFinite(p) || !(d > 0)) return '';
+      return emReais(p / d);
+    })();
+
+    /* ---- o total a prazo: DECISÃO DO DONO, não escrever ------------------
+       Pedido explícito do dono: o único valor cheio que aparece no
+       site é o à vista. A soma das parcelas não vai a lugar nenhum.
+
+       Quem for mexer aqui precisa saber o que está sendo trocado: num
+       parcelamento com juros do comprador, a soma total é informação
+       devida (CDC art. 52, II e IV). O site cumpre isso mandando para o
+       checkout do Mercado Pago, que mostra parcelas, juros e valor final
+       ANTES da confirmação — por isso toda chamada de parcela no site é
+       acompanhada da remissão ao checkout. Se um dia o checkout deixar
+       de exibir o total, ou a venda sair por fora dele, esta conta volta
+       a ser obrigatória na página. Está aqui pronta, desligada.          */
+    var totalPrazo = '';   /* intencionalmente vazio — ver acima */
+
+    /* a parcela sozinha, sem o "em até": é ela que vira o número grande */
+    var parceladoCurto = C.precoParcela
+      ? nParc + 'x de ' + C.precoParcela
+      : 'em até ' + nParc + 'x';
+
+    /* A letra miúda do bloco de preço, montada de uma vez só para não
+       existirem duas versões dela espalhadas pelas páginas. */
+    var precoDetalhe = (function () {
+      var ps = [C.preco + ' à vista'];
+      if (porDiaExato) ps[0] += ' (' + porDiaExato + ' por dia)';
+      if (totalPrazo) ps.push('a prazo, total de ' + totalPrazo + ' com juros');
+      else if (C.precoParcela && C.jurosDoCliente) ps.push('no cartão, parcelas com juros, conferidos no checkout');
+      else if (C.precoParcela) ps.push(nParc + 'x sem juros');
+      return ps.join(' · ') + '.';
+    })();
+
+    /* A versão curta, para o bloco do plano: ali o valor à vista já está
+       escrito logo acima e o parágrafo do Mercado Pago, logo abaixo do
+       botão, já manda conferir parcelas, juros e valor final. Repetir as
+       duas coisas deixaria a oferta com cara de contrato. Sobra o que
+       falta: o centavo que sustenta o "menos de R$ 1 por dia". */
+    var precoDetalheCurto = porDiaExato
+      ? 'À vista, dá ' + porDiaExato + ' por dia.'
+      : '';
 
   /* ---- preenche os textos que vêm da configuração ---- */
   var textos = {
-    preco: C.preco,
-    porDia: porDia,
-    parcelas: String(C.parcelas || 12),
-    parcelado: parcelado,
+      preco: C.preco,
+      porDia: porDia,
+      porDiaExato: porDiaExato,
+      totalPrazo: totalPrazo,
+      parceladoCurto: parceladoCurto,
+      precoDetalhe: precoDetalhe,
+      precoDetalheCurto: precoDetalheCurto,
+      parcelas: String(C.parcelas || 12),
+      parcelado: parcelado,
     precoCompleto: C.preco + ' à vista, ou ' + parcelado,
     garantia: String(C.garantiaDias || 7),
     versao:   String(C.versao || ''),
@@ -107,17 +160,40 @@
   (function () {
     var alvo = document.querySelector('[data-passo-instalar]');
     if (!alvo) return;
-    if (textos.lojaUrl) {
-      alvo.textContent = 'Um clique e o ícone do WhaLead aparece na barra do navegador.';
-      var a = document.createElement('a');
-      a.className = 'lojabtn';
-      a.href = textos.lojaUrl;
-      a.target = '_blank';
-      a.rel = 'noopener';
-      a.textContent = 'Instalar no Chrome';
-      alvo.parentNode.appendChild(a);
-    }
+      if (textos.lojaUrl) {
+        /* Dizer o nome dos botões que a pessoa vai encontrar NA LOJA.
+           É o passo onde mais gente trava: a Chrome Web Store abre com
+           um botão escrito "Usar no Chrome" e depois pede confirmação
+           numa caixinha. Quem não sabe disso acha que não instalou. */
+        alvo.textContent = 'O botão abre a página do WhaLead na Chrome Web Store, numa aba nova. '
+          + 'Lá, clique em "Usar no Chrome" e confirme em "Adicionar extensão".';
+        var a = document.createElement('a');
+        a.className = 'lojabtn';
+        a.href = textos.lojaUrl;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.appendChild(document.createTextNode('Instalar no Chrome'));
+        /* a setinha de "abre fora daqui", igual à dos outros links
+           externos do site — desenhada, nunca caractere */
+        a.insertAdjacentHTML('beforeend',
+          '<svg class="ic icsm" viewBox="0 0 24 24" fill="none" stroke="currentColor"'
+          + ' stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+          + '<path d="M7.6 16.4 16.4 7.6"/><path d="M8.6 7.6h7.8v7.8"/></svg>');
+        alvo.parentNode.appendChild(a);
+      }
   })();
+
+  /* Atalho para quem já comprou: leva direto à loja, sem passar de novo
+     pelo checkout. Fica escondido no HTML e só aparece quando existe
+     lojaUrl — assim a página nunca mostra um link morto. */
+  document.querySelectorAll('[data-loja]').forEach(function (e) {
+    var a = e.matches('a') ? e : e.querySelector('a');
+    if (!textos.lojaUrl || !a) return;
+    a.href = textos.lojaUrl;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    e.hidden = false;
+  });
 
   document.querySelectorAll('[data-suporte]').forEach(function (e) {
     e.setAttribute('href', LINK_EMAIL);

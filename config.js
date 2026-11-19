@@ -39,12 +39,12 @@ window.WHALEAD_CONFIG = {
   /* versão da extensão que está no ar. Aparece na faixa do topo e na
      legenda das telas. Tem que bater com extensao-crm/manifest.json —
      o teste t-versao-site.mjs compara os dois e falha se divergirem. */
-  versao: '4.65.0',
-  /* Link da extensão na Chrome Web Store. Enquanto estiver vazio, o
-     passo 3 do tutorial diz que o link chega por e-mail — que é o que
-     acontece hoje. Assim que a loja aprovar, cole a URL aqui e o passo
-     vira um botão "Instalar no Chrome" sozinho. */
-  lojaUrl: '',
+  versao: '4.71.0',
+    /* Link da extensão na Chrome Web Store. Vazio, o passo 3 do tutorial
+       diz que o link chega por e-mail; preenchido, o passo vira um botão
+       "Instalar no Chrome" sozinho — quem liga isso é o comum.js.
+       LIGADO em 06/11/2026: a loja aprovou e a página está no ar. */
+    lojaUrl: 'https://chromewebstore.google.com/detail/whalead-%E2%80%94-crm-no-whatsapp/gieijdggjcjbamhhajmeacclgjgalmam',
 
   /* ---- para onde vai o botão de comprar -------------------------------
      LIGADO em 12/11/2026. O servidor está no ar e testado: o cliente cria

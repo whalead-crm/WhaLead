@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <!-- Fora dos buscadores: a identificação fica disponível a quem
      abre a página, mas não vira resultado de pesquisa nem cache. -->
 <meta name="robots" content="noindex,noarchive">
@@ -11,8 +11,8 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icone-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icone-512.png">
 <link rel="apple-touch-icon" href="icone-192-claro.png">
-<link rel="stylesheet" href="conta.css">
-<style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;750;800&display=swap"><link rel="stylesheet" href="conta.css">
+<style>.ic{width:1em;height:1em;flex:none;vertical-align:-.14em}a:has(>.ic),.voltar{display:inline-flex;align-items:center;gap:7px}
 main{place-items:start center;padding-top:10px}
 .caixa{max-width:760px}
 .doc{background:#fff;border:1px solid var(--line);border-radius:18px;padding:38px 40px;line-height:1.75}
@@ -33,15 +33,17 @@ th{font-weight:700;color:var(--ink);background:var(--cream)}
 </style>
 </head>
 <body>
-<header><a class="brand" href="index.html"><img src="logo-whalead.png" alt="WhaLead"></a>
-  <nav><a href="index.html">← Voltar ao site</a></nav></header>
+<header><a class="brand" href="index.html"><img src="logo-whalead.png" alt="WhaLead" width="1991" height="659" decoding="async"></a>
+  <nav><a href="index.html"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11.4 18.6 4.8 12l6.6-6.6"/></svg> Voltar ao site</a></nav></header>
 <main><div class="caixa">
   <h1>Termos de uso</h1>
   <p class="data">Última atualização: <b>13 de novembro de 2026</b></p>
   <div class="doc">
 
 <div class="aviso"><p><b>O essencial em cinco linhas:</b> você compra uma licença do
-WhaLead Pro por <b><span data-t="preco">R$ 299,90</span></b>, pagos uma única vez.
+WhaLead Pro por <b><span data-t="preco">R$ 299,90</span></b> à vista, ou parcelada no
+cartão em <b><span data-t="parceladoCurto">12x de R$ 30,52</span></b> (com juros do
+parcelamento, mostrados no checkout). É uma compra única — não é assinatura.
 Ela vale <b><span data-t="validade">1 (um) ano</span></b> e <b>não renova sozinha</b> —
 nada é cobrado quando o prazo acaba. Você pode desistir em
 <b><span data-t="garantia">7</span> dias</b> e receber tudo de volta. Seus leads e
@@ -81,8 +83,14 @@ requisitos. Se não atender, o direito de arrependimento da seção 5 cobre voc�
 
 <h2>3. O que você está comprando</h2>
 <ul>
-  <li>Uma licença de uso do WhaLead Pro por <b><span data-t="preco">R$ 299,90</span></b>,
-    paga de uma só vez.</li>
+    <li>Uma licença de uso do WhaLead Pro por <b><span data-t="preco">R$ 299,90</span></b>
+      à vista. Você pode parcelar no cartão em
+      <b><span data-t="parceladoCurto">12x de R$ 30,52</span></b>; nesse caso os juros do
+      parcelamento correm por sua conta. <b>O número de parcelas, os juros e o valor
+      total a pagar aparecem no checkout do Mercado Pago antes de você confirmar a
+      compra</b> — confira ali antes de concluir.</li>
+    <li>É uma compra única: não é assinatura e nada é cobrado de novo quando o prazo
+      da licença termina.</li>
   <li>A licença tem prazo de <b><span data-t="validade">1 (um) ano</span></b>, contado
     da data em que o pagamento é confirmado. A data de vencimento fica visível no seu
     painel, e você pode conferi-la quando quiser.</li>
