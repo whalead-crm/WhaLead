@@ -6,6 +6,15 @@ User-agent: *
 Disallow: /termos.html
 Disallow: /privacidade.html
 
+# O revisor de anúncios do Google. Ele IGNORA a regra "User-agent: *" de
+# propósito, então o Disallow ali em cima nunca valeu para ele — mas
+# deixar escrito tira a dúvida: a página de privacidade precisa abrir para
+# o revisor, ou o anúncio é reprovado por "destino inacessível".
+User-agent: AdsBot-Google
+Allow: /
+User-agent: AdsBot-Google-Mobile
+Allow: /
+
 # Raspadores de dados conhecidos: fora.
 User-agent: CCBot
 Disallow: /

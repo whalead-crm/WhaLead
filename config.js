@@ -46,6 +46,25 @@ window.WHALEAD_CONFIG = {
        LIGADO em 06/11/2026: a loja aprovou e a página está no ar. */
     lojaUrl: 'https://chromewebstore.google.com/detail/whalead-%E2%80%94-crm-no-whatsapp/gieijdggjcjbamhhajmeacclgjgalmam',
 
+  /* ---- medir de onde veio a venda -------------------------------------
+     LIGADO em 06/11/2026, junto com a seção 8 da política de privacidade,
+     que agora diz o que é guardado e por quanto tempo. Os dois andam
+     juntos: o teste t-origem.mjs derruba a build se um disser uma coisa
+     e o outro disser outra.
+
+     Ligado, o site faz UMA coisa só: quando alguém chega por um anúncio,
+     guarda o gclid (o código que o Google põe no endereço) e manda junto
+     no cadastro. Nenhum cookie, nenhum script de terceiro, nada sai para
+     fora do seu servidor.
+
+     Por que na CONTA e não na página de obrigado: quem paga termina em
+     api.whalead.com.br, que é outro domínio — de lá o site não enxerga
+     o que foi guardado aqui. Preso à conta, o vínculo sobrevive.
+
+     Com isso você sobe para o Google Ads a VENDA, não o clique:
+     Ferramentas > Conversões > Importar > Upload de conversões offline.  */
+  medirOrigem:  true,
+
   /* ---- para onde vai o botão de comprar -------------------------------
      LIGADO em 12/11/2026. O servidor está no ar e testado: o cliente cria
      conta antes de pagar e o acesso é liberado pelo painel.

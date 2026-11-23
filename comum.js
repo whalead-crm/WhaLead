@@ -381,6 +381,45 @@
     }).observe(document.documentElement, { childList: true, subtree: true });
   })();
 
+  /* ---- de onde veio esta visita --------------------------------------
+     So roda com medirOrigem ligado no config. Guarda no proprio navegador
+     (localStorage, mesmo dominio) o gclid e a campanha de quem chegou por
+     anuncio, para o cadastro mandar isso junto e voce conseguir ligar a
+     VENDA ao anuncio que a trouxe.
+
+     Nao usa cookie. Nao chama nada de fora. Vale 90 dias, que e a janela
+     padrao de atribuicao do Google. Ultimo clique ganha: quem volta por
+     outro anuncio sobrescreve o anterior, igual o Google conta.          */
+  window.WhaLeadOrigem = (function () {
+    var CHAVE = 'wl_origem', DIAS = 90;
+    function guardar() {
+      if (!C.medirOrigem) return;
+      var q = new URLSearchParams(location.search);
+      var g = q.get('gclid') || q.get('wbraid') || q.get('gbraid') || '';
+      var f = q.get('utm_source') || '';
+      if (!g && !f) return;            /* visita normal: nao guarda nada */
+      try {
+        localStorage.setItem(CHAVE, JSON.stringify({
+          gclid: g.slice(0, 120),
+          fonte: f.slice(0, 40),
+          campanha: (q.get('utm_campaign') || '').slice(0, 60),
+          em: Date.now()
+        }));
+      } catch (e) {}                   /* aba anonima bloqueia: tudo bem */
+    }
+    function ler() {
+      if (!C.medirOrigem) return '';
+      try {
+        var o = JSON.parse(localStorage.getItem(CHAVE) || 'null');
+        if (!o || !o.em) return '';
+        if (Date.now() - o.em > DIAS * 864e5) { localStorage.removeItem(CHAVE); return ''; }
+        return [o.gclid, o.fonte, o.campanha].join('|').slice(0, 220);
+      } catch (e) { return ''; }
+    }
+    guardar();
+    return { guardar: guardar, ler: ler, CHAVE: CHAVE };
+  })();
+
   /* ---- a faixa que aparece quando a visita vem da extensão ---- */
   var p = new URLSearchParams(location.search);
   if (p.get('origem') === 'extensao' || p.get('source') === 'extension') {
