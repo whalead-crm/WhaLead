@@ -395,12 +395,24 @@
     function guardar() {
       if (!C.medirOrigem) return;
       var q = new URLSearchParams(location.search);
-      var g = q.get('gclid') || q.get('wbraid') || q.get('gbraid') || '';
+      /* Cada rede marca o clique com um nome diferente. Google usa
+         gclid (e wbraid/gbraid quando o iOS corta o cookie); Meta usa
+         fbclid. Guardamos qual veio junto com o codigo, senao daqui a
+         dois meses ninguem sabe se aquele codigo solto era do Google
+         ou do Instagram. */
+      var redes = [['g', 'gclid'], ['g', 'wbraid'], ['g', 'gbraid'],
+                   ['f', 'fbclid'], ['f', 'ttclid']];
+      var g = '', rede = '';
+      for (var i = 0; i < redes.length; i++) {
+        var v = q.get(redes[i][1]);
+        if (v) { g = v; rede = redes[i][1]; break; }
+      }
       var f = q.get('utm_source') || '';
       if (!g && !f) return;            /* visita normal: nao guarda nada */
       try {
         localStorage.setItem(CHAVE, JSON.stringify({
           gclid: g.slice(0, 120),
+          rede: rede,
           fonte: f.slice(0, 40),
           campanha: (q.get('utm_campaign') || '').slice(0, 60),
           em: Date.now()
@@ -413,7 +425,7 @@
         var o = JSON.parse(localStorage.getItem(CHAVE) || 'null');
         if (!o || !o.em) return '';
         if (Date.now() - o.em > DIAS * 864e5) { localStorage.removeItem(CHAVE); return ''; }
-        return [o.gclid, o.fonte, o.campanha].join('|').slice(0, 220);
+        return [o.gclid, o.fonte, o.campanha, o.rede || ''].join('|').slice(0, 220);
       } catch (e) { return ''; }
     }
     guardar();
