@@ -39,7 +39,7 @@ window.WHALEAD_CONFIG = {
   /* versão da extensão que está no ar. Aparece na faixa do topo e na
      legenda das telas. Tem que bater com extensao-crm/manifest.json —
      o teste t-versao-site.mjs compara os dois e falha se divergirem. */
-  versao: '4.74.0',
+  versao: '4.91.0',
     /* Link da extensão na Chrome Web Store. Vazio, o passo 3 do tutorial
        diz que o link chega por e-mail; preenchido, o passo vira um botão
        "Instalar no Chrome" sozinho — quem liga isso é o comum.js.
